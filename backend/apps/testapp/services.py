@@ -5,3 +5,6 @@ def create_test(title: str, content: str) -> Test:
 
 def list_test():
     return Test.objects.all()
+
+def pula():
+    return 1+1

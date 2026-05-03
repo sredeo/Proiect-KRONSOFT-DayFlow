@@ -36,8 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.testapp',
     'rest_framework',
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",  # для logout
+    "apps.users",
+    'apps.testapp',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +106,27 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = "users.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",  # Default all are banned
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,       # New refresh every update
+    "BLACKLIST_AFTER_ROTATION": True,    # old becomes invalid
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 
 # Internationalization
