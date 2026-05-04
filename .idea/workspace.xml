@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95163bde-5f44-46b6-b537-63bcf3b73d1b" name="Changes" comment="">
+    <list default="true" id="95163bde-5f44-46b6-b537-63bcf3b73d1b" name="Changes" comment="added dashboard app without Google Maps API">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/DjangoProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/DjangoProject/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/DjangoProject/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/DjangoProject/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/testapp/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/testapp/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/users/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/users/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/dashboard/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/dashboard/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/users/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,8 +118,17 @@
       <option name="presentableId" value="Default" />
       <updated>1777909312147</updated>
       <workItem from="1777909313366" duration="474000" />
-      <workItem from="1777909849529" duration="4327000" />
+      <workItem from="1777909849529" duration="6260000" />
     </task>
+    <task id="LOCAL-00001" summary="added dashboard app without Google Maps API">
+      <option name="closed" value="true" />
+      <created>1777914508783</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1777914508783</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -137,5 +144,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added dashboard app without Google Maps API" />
+    <option name="LAST_COMMIT_MESSAGE" value="added dashboard app without Google Maps API" />
   </component>
 </project>

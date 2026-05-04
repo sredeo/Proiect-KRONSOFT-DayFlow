@@ -34,6 +34,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=50, blank=True)
     #avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.USER)
+
+    default_location = models.CharField(max_length=255, default="Brașov, România",
+                                        help_text="Locația de unde își începe ziua utilizatorul")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
