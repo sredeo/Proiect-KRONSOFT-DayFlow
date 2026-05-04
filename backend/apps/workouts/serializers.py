@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Exercise, WorkoutSession, ExerciseSet
+from .models import Exercise, WorkoutSession, ExerciseSet, WeeklySplit
+from rest_framework.validators import UniqueTogetherValidator
 
 class ExerciseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,3 +24,18 @@ class WorkoutSessionSerializer(serializers.ModelSerializer):
         model = WorkoutSession
         fields = ["id", "user", "date", "notes", "is_completed", "sets"]
         read_only_fields = ["user", "date"] # Acestea sunt setate automat pe backend
+
+
+class WeeklySplitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklySplit
+        fields = ["id", "day_of_week", "muscle_group"]
+
+        # Aceasta este piesa lipsă care previne eroarea 500
+        validators = [
+            UniqueTogetherValidator(
+                queryset=WeeklySplit.objects.all(),
+                fields=['day_of_week'],  # Verifică să nu existe deja ziua
+                message="Ai deja un antrenament programat pentru această zi!"
+            )
+        ]

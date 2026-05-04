@@ -35,3 +35,24 @@ class ExerciseSet(models.Model):
 
     def __str__(self):
         return f"{self.exercise.name} - Set {self.set_number}: {self.reps}x {self.weight_kg}kg"
+
+class WeeklySplit(models.Model):
+        DAYS_OF_WEEK = [
+            ('Luni', 'Luni'),
+            ('Marti', 'Marti'),
+            ('Miercuri', 'Miercuri'),
+            ('Joi', 'Joi'),
+            ('Vineri', 'Vineri'),
+            ('Sambata', 'Sambata'),
+            ('Duminica', 'Duminica'),
+        ]
+        user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='weekly_splits')
+        day_of_week = models.CharField(max_length=15, choices=DAYS_OF_WEEK)
+        muscle_group = models.CharField(max_length=100)  # Ex: "Piept si Triceps", "Picioare"
+
+        class Meta:
+            # Ne asiguram ca userul nu poate pune doua split-uri diferite pe aceeasi zi
+            unique_together = ['user', 'day_of_week']
+
+        def __str__(self):
+            return f"{self.user} - {self.day_of_week}: {self.muscle_group}"

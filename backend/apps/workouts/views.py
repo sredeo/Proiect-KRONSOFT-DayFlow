@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Exercise, WorkoutSession
-from .serializers import ExerciseSerializer, WorkoutSessionSerializer, ExerciseSetSerializer
+from .models import Exercise, WorkoutSession, WeeklySplit
+from .serializers import ExerciseSerializer, WorkoutSessionSerializer, ExerciseSetSerializer, WeeklySplitSerializer
 from . import services
 
 # 1. Gestionarea Exercițiilor (Catalogul)
@@ -59,3 +59,16 @@ class FinishWorkoutView(APIView):
             return Response(WorkoutSessionSerializer(session).data, status=status.HTTP_200_OK)
         except WorkoutSession.DoesNotExist:
             return Response({"error": "Sesiunea nu a fost găsită."}, status=status.HTTP_404_NOT_FOUND)
+
+class WeeklySplitView(generics.ListCreateAPIView):
+    """GET pentru a vedea split-ul pe toata saptamana, POST pentru a asocia o grupa unei zile"""
+    serializer_class = WeeklySplitSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Userul logat va vedea doar zilele lui, nu si ale altora
+        return WeeklySplit.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Cand salveaza, asociaza automat ziua de antrenament cu userul logat
+        serializer.save(user=self.request.user)
