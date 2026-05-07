@@ -50,6 +50,8 @@ class WeeklySplit(models.Model):
         day_of_week = models.CharField(max_length=15, choices=DAYS_OF_WEEK)
         muscle_group = models.CharField(max_length=100)  # Ex: "Piept si Triceps", "Picioare"
 
+        exercises = models.ManyToManyField(Exercise, blank=True, related_name="routines")
+
         class Meta:
             # Ne asiguram ca userul nu poate pune doua split-uri diferite pe aceeasi zi
             unique_together = ['user', 'day_of_week']

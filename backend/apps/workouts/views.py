@@ -3,16 +3,46 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Exercise, WorkoutSession, WeeklySplit
+from .models import Exercise, WorkoutSession, WeeklySplit, ExerciseSet
 from .serializers import ExerciseSerializer, WorkoutSessionSerializer, ExerciseSetSerializer, WeeklySplitSerializer
 from . import services
 
+
+# ... (importurile tale de sus rămân la fel) ...
+
 # 1. Gestionarea Exercițiilor (Catalogul)
 class ExerciseListView(generics.ListCreateAPIView):
-    """GET pentru a vedea exercițiile, POST pentru a adăuga unul nou"""
-    queryset = Exercise.objects.all()
+    """GET pentru a vedea exercițiile (cu filtrare opțională), POST pentru a adăuga unul nou"""
     serializer_class = ExerciseSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Ordonăm alfabetic by default
+        queryset = Exercise.objects.all().order_by('name')
+
+        # Căutăm parametrul 'muscle_group' în URL (ex: ?muscle_group=Chest)
+        muscle = self.request.query_params.get('muscle_group', None)
+
+        if muscle is not None:
+            # iexact face filtrarea case-insensitive (ignoră litere mari/mici)
+            queryset = queryset.filter(muscle_group__iexact=muscle)
+
+        return queryset
+
+
+# 1.5 Căutarea Grupelor Musculare Unice (Pentru meniul Dropdown)
+class MuscleGroupListView(APIView):
+    """GET /api/workouts/exercises/muscle_groups/"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Extragem doar grupele musculare, fără duplicate, ordonate alfabetic
+        groups = Exercise.objects.values_list('muscle_group', flat=True).distinct().order_by('muscle_group')
+        return Response(groups)
+
+
+# 2. Începerea unei sesiuni noi de antrenament
+# ... (restul codului tău rămâne complet neschimbat) ...
 
 # 2. Începerea unei sesiuni noi de antrenament
 class StartWorkoutView(APIView):
@@ -72,3 +102,34 @@ class WeeklySplitView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Cand salveaza, asociaza automat ziua de antrenament cu userul logat
         serializer.save(user=self.request.user)
+
+# ... restul codului tău din views.py ...
+
+# 5. Modificarea sau Ștergerea unui Set (ExerciseSet)
+class ExerciseSetDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: Vezi un set anume
+    PATCH/PUT: Modifică setul (ex: ai greșit kilogramele)
+    DELETE: Șterge setul complet
+    """
+    serializer_class = ExerciseSetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Măsură de securitate: Userul poate modifica/șterge DOAR seturile din propriile sesiuni
+        return ExerciseSet.objects.filter(session__user=self.request.user)
+
+
+# 6. Modificarea sau Ștergerea unei zile din Split
+class WeeklySplitDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: Vezi o zi din split
+    PATCH/PUT: Schimbă grupa (ex: treci de la Piept la Spate)
+    DELETE: Șterge ziua complet
+    """
+    serializer_class = WeeklySplitSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Userul poate șterge doar split-ul lui
+        return WeeklySplit.objects.filter(user=self.request.user)

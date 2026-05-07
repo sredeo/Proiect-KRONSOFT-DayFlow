@@ -27,15 +27,18 @@ class WorkoutSessionSerializer(serializers.ModelSerializer):
 
 
 class WeeklySplitSerializer(serializers.ModelSerializer):
+    # Adăugăm user-ul ascuns, luat automat din request, pentru a-l folosi în validator
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = WeeklySplit
-        fields = ["id", "day_of_week", "muscle_group"]
+        fields = ["id", "user", "day_of_week", "muscle_group", "exercises"]
 
-        # Aceasta este piesa lipsă care previne eroarea 500
+        # Verificăm ca ACELAȘI user să nu își pună 2 antrenamente în ACEEAȘI zi
         validators = [
             UniqueTogetherValidator(
                 queryset=WeeklySplit.objects.all(),
-                fields=['day_of_week'],  # Verifică să nu existe deja ziua
+                fields=['user', 'day_of_week'],
                 message="Ai deja un antrenament programat pentru această zi!"
             )
         ]
