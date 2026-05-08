@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",  # для logout
     "apps.users",
     'apps.testapp',
+    "apps.preferences",
 ]
 
 MIDDLEWARE = [
