@@ -21,7 +21,7 @@ def get_hobby_suggestion(user, free_minutes, current_energy='Medium'):
         Their active hobbies are: {hobbies_list}.
 
         Suggest the best hobby for this time slot. If no hobby fits perfectly, suggest the closest one.
-        Provide a short, motivating reason in Romanian.
+        Provide a short, motivating reason in the same language as the selected hobby.
 
         Return ONLY a JSON object with these keys: "hobby", "reason".
         """
