@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",  # для logout
     "apps.users",
     'apps.testapp',
+    "apps.dashboard",
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+GOOGLE_MAPS_API_KEY = "AIzaSyBXUsd80u2H_Q-0fxtdy-CBXe30B-TuuKk"
