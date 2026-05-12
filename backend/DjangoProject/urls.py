@@ -21,4 +21,5 @@ urlpatterns = [
     path("api/", include("apps.testapp.urls")),
     path("api/", include("apps.users.urls")),
     path("api/", include("apps.dashboard.urls")),
+    path("api/", include("apps.preferences.urls")),
 ]

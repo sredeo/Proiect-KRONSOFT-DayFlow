@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.users",
     'apps.testapp',
     "apps.dashboard",
+    "apps.preferences",
 ]
 
 MIDDLEWARE = [
