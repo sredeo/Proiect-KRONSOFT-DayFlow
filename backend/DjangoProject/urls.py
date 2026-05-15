@@ -20,4 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path("api/", include("apps.testapp.urls")),
     path("api/", include("apps.users.urls")),
+    path("api/", include("apps.dashboard.urls")),
+    path("api/", include("apps.preferences.urls")),
+    path("api/", include("apps.workouts.urls")),
+    path('api/', include('apps.hobbies.urls'))
 ]

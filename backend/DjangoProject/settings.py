@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-tlxf)-p&bt_5&8^uq0u3iy+jp%m13%acni*%m$g+c^u%u*ea7='
+GEMINI_API_KEY = "AIzaSyCEFTVBWhuQEEZJfSkP5osLEUZqtvM9Uq0"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,6 +42,10 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",  # для logout
     "apps.users",
     'apps.testapp',
+    "apps.dashboard",
+    "apps.preferences",
+    'apps.workouts',
+    'apps.hobbies'
 ]
 
 MIDDLEWARE = [
@@ -145,3 +150,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+GOOGLE_MAPS_API_KEY = "AIzaSyBXUsd80u2H_Q-0fxtdy-CBXe30B-TuuKk"
