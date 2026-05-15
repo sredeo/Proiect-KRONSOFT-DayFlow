@@ -3,14 +3,14 @@ from .views import MuscleGroupListView, ExerciseListView, StartWorkoutView, LogS
     WeeklySplitView, WeeklySplitDetailView, ExerciseSetDetailView
 
 urlpatterns = [
-    path('exercises/muscle_groups/', MuscleGroupListView.as_view(), name='muscle-groups'),
-    path('exercises/', ExerciseListView.as_view(), name='exercise_list'),
+    path('workouts/exercises/muscle_groups/', MuscleGroupListView.as_view(), name='muscle-groups'),
+    path('workouts/exercises/', ExerciseListView.as_view(), name='exercise_list'),
 
-    path('start/', StartWorkoutView.as_view(), name='start_workout'),
-    path('sessions/<int:session_id>/log/', LogSetView.as_view(), name='log_set'),
-    path('sessions/<int:session_id>/finish/', FinishWorkoutView.as_view(), name='finish_workout'),
+    path('workouts/start/', StartWorkoutView.as_view(), name='start_workout'),
+    path('workouts/sessions/<int:session_id>/log/', LogSetView.as_view(), name='log_set'),
+    path('workouts/sessions/<int:session_id>/finish/', FinishWorkoutView.as_view(), name='finish_workout'),
 
-    path('split/', WeeklySplitView.as_view(), name='weekly_split'),
-    path('sets/<int:pk>/', ExerciseSetDetailView.as_view(), name='set_detail'),
-    path('split/<int:pk>/', WeeklySplitDetailView.as_view(), name='weekly_split_detail'),
+    path('workouts/split/', WeeklySplitView.as_view(), name='weekly_split'),
+    path('workouts/sets/<int:pk>/', ExerciseSetDetailView.as_view(), name='set_detail'),
+    path('workouts/split/<int:pk>/', WeeklySplitDetailView.as_view(), name='weekly_split_detail'),
 ]
