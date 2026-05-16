@@ -3,7 +3,11 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
-export default function SettingsScreen() {
+type SettingsScreenProps = {
+  onLogout: () => Promise<void>;
+};
+
+export default function SettingsScreen({ onLogout }: SettingsScreenProps) {
   const navigation = useNavigation();
   const [notif, setNotif] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -64,7 +68,7 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
       </View>

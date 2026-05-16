@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { AuthAPI } from './../api';
 
 type RegisterScreenProps = {
   onRegister: () => void;
@@ -7,42 +18,132 @@ type RegisterScreenProps = {
 };
 
 export default function RegisterScreen({ onRegister, onSwitchToLogin }: RegisterScreenProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({
+    email: '',
+    username: '',
+    first_name: '',
+    last_name: '',
+    password: '',
+    password_confirm: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  const set = (key: keyof typeof form) => (value: string) =>
+    setForm(prev => ({ ...prev, [key]: value }));
+
+  const handleRegister = async () => {
+    const { email, username, password, password_confirm } = form;
+
+    if (!email.trim() || !username.trim() || !password) {
+      Alert.alert('Error', 'Fill required fields: email, username, password');
+      return;
+    }
+    if (password !== password_confirm) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await AuthAPI.register({
+        email: email.trim().toLowerCase(),
+        username: username.trim(),
+        first_name: form.first_name.trim(),
+        last_name: form.last_name.trim(),
+        password,
+        password_confirm,
+      });
+      Alert.alert('Success!', 'Account created. Please log in.', [
+        { text: 'OK', onPress: onRegister },
+      ]);
+    } catch (e: any) {
+      Alert.alert('Registration error', e?.message ?? 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.appName}>Dayflow</Text>
-      <View style={styles.card}>
-        <Text style={styles.title}>Create account</Text>
-        <Text style={styles.subtitle}>Set up your minimal workspace</Text>
+      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <Text style={styles.appName}>Dayflow</Text>
+        <View style={styles.card}>
+          <Text style={styles.title}>Create account</Text>
+          <Text style={styles.subtitle}>Join Dayflow today</Text>
 
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          placeholderTextColor="#999"
-          style={styles.input}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          placeholderTextColor="#999"
-          style={styles.input}
-          secureTextEntry
-        />
+          <TextInput
+            value={form.email}
+            onChangeText={set('email')}
+            placeholder="Email *"
+            placeholderTextColor="#999"
+            style={styles.input}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            editable={!loading}
+          />
+          <TextInput
+            value={form.username}
+            onChangeText={set('username')}
+            placeholder="Username *"
+            placeholderTextColor="#999"
+            style={styles.input}
+            autoCapitalize="none"
+            autoCorrect={false}
+            editable={!loading}
+          />
+          <TextInput
+            value={form.first_name}
+            onChangeText={set('first_name')}
+            placeholder="First name"
+            placeholderTextColor="#999"
+            style={styles.input}
+            editable={!loading}
+          />
+          <TextInput
+            value={form.last_name}
+            onChangeText={set('last_name')}
+            placeholder="Last name"
+            placeholderTextColor="#999"
+            style={styles.input}
+            editable={!loading}
+          />
+          <TextInput
+            value={form.password}
+            onChangeText={set('password')}
+            placeholder="Password *"
+            placeholderTextColor="#999"
+            style={styles.input}
+            secureTextEntry
+            editable={!loading}
+          />
+          <TextInput
+            value={form.password_confirm}
+            onChangeText={set('password_confirm')}
+            placeholder="Confirm password *"
+            placeholderTextColor="#999"
+            style={styles.input}
+            secureTextEntry
+            editable={!loading}
+          />
 
-        <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={onRegister}>
-          <Text style={styles.buttonText}>Create account</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleRegister}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Create account</Text>
+            )}
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.textButton} onPress={onSwitchToLogin}>
-          <Text style={styles.loginText}>Already have an account? Login</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.textButton} onPress={onSwitchToLogin} disabled={loading}>
+            <Text style={styles.loginText}>Already have an account? Sign in</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -51,8 +152,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f2f4f8',
+  },
+  scroll: {
+    flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 40,
   },
   card: {
     width: '100%',
@@ -82,8 +187,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#000',
     textAlign: 'center',
-    backgroundColor: 'transparent',
-    marginBottom: 75,
+    marginBottom: 40,
   },
   input: {
     height: 52,
@@ -101,8 +205,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
-  registerButton: {
-    backgroundColor: '#7c3aed',
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
