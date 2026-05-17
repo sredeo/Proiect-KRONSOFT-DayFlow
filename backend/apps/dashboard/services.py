@@ -3,6 +3,20 @@ from django.conf import settings
 from .models import Task
 
 
+def _determine_origin(user, target_date, start_time, origin_preference, custom_origin):
+    if origin_preference == "home":
+        return getattr(user, 'default_location', 'București, România')
+    elif origin_preference == "custom" and custom_origin:
+        return custom_origin
+    else:  # Default: 'previous'
+        previous_task = Task.objects.filter(
+            user=user, date=target_date, end_time__lte=start_time
+        ).order_by("-end_time").first()
+
+        if previous_task and previous_task.location:
+            return previous_task.location
+        return getattr(user, 'default_location', 'București, România')
+
 def calculate_transit_time_google(origin: str, destination: str, mode: str) -> int:
     """Apeleaza Google Maps Distance Matrix API."""
     if not origin or not destination:
@@ -40,26 +54,16 @@ def create_task(user, validated_data: dict) -> Task:
     destination = validated_data.get("location")
     transport_mode = validated_data.get("transport_mode")
 
-    # 1. Cautam care este ultimul task dinaintea acestuia pentru a afla de unde plecam
-    previous_task = Task.objects.filter(
-        user=user,
-        date=target_date,
-        end_time__lte=start_time  # Se termina inainte sa inceapa cel nou
-    ).order_by("-end_time").first()
+    origin_preference = validated_data.pop("origin_preference", "previous")
+    custom_origin = validated_data.pop("custom_origin", "")
 
-    # Daca exista un task anterior, plecam de acolo. Altfel, setam o locatie default
-    if previous_task and previous_task.location:
-        origin = previous_task.location
-    else:
-        origin = user.default_location
+    origin = _determine_origin(user, target_date, start_time, origin_preference, custom_origin)
 
-    # 2. Calculam timpul real de tranzit
     if origin and destination:
         transit_time = calculate_transit_time_google(origin, destination, transport_mode)
     else:
         transit_time = 0
 
-    # 3. Salvam task-ul in baza de date
     task = Task.objects.create(
         user=user,
         estimated_transit_time=transit_time,
@@ -70,3 +74,28 @@ def create_task(user, validated_data: dict) -> Task:
 
 def get_daily_timeline(user, specific_date):
     return Task.objects.filter(user=user, date=specific_date).order_by("start_time")
+
+def estimate_task_transit(user, target_date, start_time, destination, transport_mode, origin_preference="previous", custom_origin="") -> int:
+    if not destination or not start_time or not target_date:
+        return 0
+    origin = _determine_origin(user, target_date, start_time, origin_preference, custom_origin)
+    return calculate_transit_time_google(origin, destination, transport_mode)
+
+
+def get_location_suggestions(query: str) -> list:
+    if not query or len(query) < 3:
+        return []
+
+    api_key = getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
+    url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json?input={query}&key={api_key}&language=ro"
+
+    try:
+        response = requests.get(url)
+        data = response.json()
+
+        if data.get('status') == 'OK':
+            return [prediction['description'] for prediction in data.get('predictions', [])]
+    except Exception as e:
+        print(f"Eroare la Google Places API: {e}")
+
+    return []

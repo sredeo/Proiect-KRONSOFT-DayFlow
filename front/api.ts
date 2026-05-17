@@ -1,7 +1,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.41.175:8000/api';
+const BASE_URL = 'http://192.168.0.45:8000/api';
 
 export const TokenStorage = {
   async getAccess(): Promise<string | null> {
@@ -98,6 +98,7 @@ export interface UserProfile {
   last_name: string;
   role: 'admin' | 'premium_user' | 'user';
   created_at: string;
+  default_location?: string;
 }
 
 export interface RegisterPayload {
@@ -148,7 +149,7 @@ export const UsersAPI = {
     return apiFetch<UserProfile>('/users/me/');
   },
 
-  async updateMe(data: Partial<Pick<UserProfile, 'first_name' | 'last_name' | 'username'>>): Promise<UserProfile> {
+  async updateMe(data: Partial<Pick<UserProfile, 'first_name' | 'last_name' | 'username' | 'default_location'>>): Promise<UserProfile> {
     return apiFetch<UserProfile>('/users/me/', {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -161,4 +162,86 @@ export const UsersAPI = {
       body: JSON.stringify({ old_password, new_password }),
     });
   },
+};
+
+export interface Task {
+  id: number;
+  title: string;
+  category: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  location: string;
+  transport_mode: string;
+  estimated_transit_time: number;
+}
+
+export interface UserPreferences {
+  default_transport_mode: string;
+  transit_notifications: boolean;
+  hobby_notifications: boolean;
+}
+
+export const DashboardAPI = {
+  async getTimeline(date?: string): Promise<Task[]> {
+    const path = date ? `/dashboard/timeline/?date=${date}` : '/dashboard/timeline/';
+    const cacheKey = `@timeline_cache_${date || 'today'}`;
+
+    const isOffline = await AsyncStorage.getItem('offline_mode') === 'true';
+
+    if (isOffline) {
+      console.log("Mod Offline activat: Citim datele din cache-ul telefonului.");
+      const cachedData = await AsyncStorage.getItem(cacheKey);
+      return cachedData ? JSON.parse(cachedData) : [];
+    }
+
+    try {
+      const data = await apiFetch<Task[]>(path);
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(data));
+      return data;
+    } catch (error) {
+      console.log("Eroare de rețea. Încercăm să încărcăm din cache...");
+      const cachedData = await AsyncStorage.getItem(cacheKey);
+      if (cachedData) return JSON.parse(cachedData);
+      throw error;
+    }
+  },
+
+  async deleteTask(taskId: number): Promise<void> {
+    return apiFetch(`/dashboard/tasks/${taskId}/`, {
+      method: 'DELETE',
+    });
+  },
+  async createTask(data: Partial<Task>): Promise<Task> {
+    return apiFetch<Task>('/dashboard/tasks/create/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async estimateTransit(data: Partial<Task>): Promise<{ estimated_transit_time: number }> {
+    return apiFetch<{ estimated_transit_time: number }>('/dashboard/tasks/estimate/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async suggestLocations(query: string): Promise<string[]> {
+    return apiFetch<string[]>(`/dashboard/locations/suggest/?q=${encodeURIComponent(query)}`);
+  }
+};
+
+export const SettingsAPI = {
+  async getPreferences(): Promise<UserPreferences> {
+    return apiFetch<UserPreferences>('/settings/preferences/');
+  },
+  async updatePreferences(data: Partial<UserPreferences>): Promise<UserPreferences> {
+    return apiFetch<UserPreferences>('/settings/preferences/', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+  async suggestLocations(query: string): Promise<string[]> {
+    return apiFetch<string[]>(`/dashboard/locations/suggest/?q=${encodeURIComponent(query)}`);
+  }
 };

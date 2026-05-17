@@ -2,12 +2,16 @@ from rest_framework import serializers
 from .models import Task
 
 class TaskSerializer(serializers.ModelSerializer):
+    origin_preference = serializers.CharField(write_only=True, required=False, default="previous")
+    custom_origin = serializers.CharField(write_only=True, required=False, allow_blank=True)
+
     class Meta:
         model = Task
         fields = [
             "id", "title", "category", "date",
             "start_time", "end_time", "location",
-            "transport_mode", "estimated_transit_time"
+            "transport_mode", "estimated_transit_time",
+            "origin_preference", "custom_origin"
         ]
         read_only_fields = ["id", "estimated_transit_time"]
 

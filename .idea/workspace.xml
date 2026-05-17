@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95163bde-5f44-46b6-b537-63bcf3b73d1b" name="Changes" comment="added dashboard app without Google Maps API">
+    <list default="true" id="95163bde-5f44-46b6-b537-63bcf3b73d1b" name="Changes" comment="added settings backend">
+      <change afterPath="$PROJECT_DIR$/front/notifications.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/DjangoProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/DjangoProject/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/dashboard/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/dashboard/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/apps/dashboard/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/dashboard/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/users/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/dashboard/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/dashboard/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/dashboard/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/users/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/users/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/settings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/settings.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,13 +31,14 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="frontback-user" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -61,13 +70,15 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "git-widget-placeholder": "backend-dashboard",
+    "git-widget-placeholder": "frontback-user-settings-dashboard",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/crist/AppData/Roaming/JetBrains/PyCharm2025.1/node/versions/24.15.0/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "C:\\Users\\crist\\Desktop\\PCLP3\\Proiect-KRONSOFT-DayFlowReal\\front\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -106,7 +117,6 @@
     <attachedChunks>
       <set>
         <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PY-251.26927.90" />
-        <option value="bundled-python-sdk-41e8cd69c857-64d779b69b7a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26927.90" />
       </set>
     </attachedChunks>
   </component>
@@ -146,6 +156,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="login+register+logout" />
     <MESSAGE value="added dashboard app without Google Maps API" />
     <option name="LAST_COMMIT_MESSAGE" value="added dashboard app without Google Maps API" />
   </component>
