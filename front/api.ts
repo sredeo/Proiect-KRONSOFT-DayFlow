@@ -1,7 +1,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.41.175:8000/api';
+const BASE_URL = 'http://192.168.1.2:8000/api';
 
 export const TokenStorage = {
   async getAccess(): Promise<string | null> {
@@ -109,12 +109,59 @@ export interface RegisterPayload {
   last_name?: string;
 }
 
+export interface NutritionTarget {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface MealFoodEntry {
+  id: number;
+  food_item: number;
+  food_name: string;
+  quantity_grams: number;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface MealInfo {
+  id: number;
+  name: string;
+  meal_type: string;
+  date: string;
+  notes?: string;
+  foods: MealFoodEntry[];
+  total_calories: number;
+  total_protein: number;
+  total_carbs: number;
+  total_fat: number;
+}
+
+export interface MacroSummary {
+  date: string;
+  target: NutritionTarget;
+  consumed: NutritionTarget;
+  remaining: NutritionTarget;
+  meals: MealInfo[];
+}
+
+export interface FoodItem {
+  id: number;
+  name: string;
+  calories_per_100g: number;
+  protein_per_100g: number;
+  carbs_per_100g: number;
+  fat_per_100g: number;
+}
 
 export const AuthAPI = {
   async login(email: string, password: string): Promise<AuthTokens> {
     const tokens = await apiFetch<AuthTokens>('/auth/login/', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, username: email, password }),
     }, false);
     await TokenStorage.save(tokens.access, tokens.refresh);
     return tokens;
@@ -160,5 +207,43 @@ export const UsersAPI = {
       method: 'POST',
       body: JSON.stringify({ old_password, new_password }),
     });
+  },
+};
+
+export const NutritionAPI = {
+  async getMacroSummary(): Promise<MacroSummary> {
+    return apiFetch<MacroSummary>('/nutrition/macros-summary/');
+  },
+
+  async getMeals(): Promise<MealInfo[]> {
+    return apiFetch<MealInfo[]>('/nutrition/meals/');
+  },
+
+  async createMeal(name: string, meal_type = 'Breakfast'): Promise<MealInfo> {
+    const today = new Date().toISOString().slice(0, 10);
+    return apiFetch<MealInfo>('/nutrition/meals/', {
+      method: 'POST',
+      body: JSON.stringify({ name, meal_type, date: today }),
+    });
+  },
+
+  async createFoodItem(payload: Omit<FoodItem, 'id'>): Promise<FoodItem> {
+    return apiFetch<FoodItem>('/nutrition/foods/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async addFoodToMeal(mealId: number, foodItemId: number, quantityGrams: number) {
+    return apiFetch<MealFoodEntry>(`/nutrition/meals/${mealId}/foods/`, {
+      method: 'POST',
+      body: JSON.stringify({ food_item: foodItemId, quantity_grams: quantityGrams }),
+    });
+  },
+
+  async deleteMeal(mealId: number): Promise<void> {
+    await apiFetch<void>(`/nutrition/meals/${mealId}/`, {
+      method: 'DELETE',
+    }, false);
   },
 };

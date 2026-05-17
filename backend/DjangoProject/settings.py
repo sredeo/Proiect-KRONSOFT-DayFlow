@@ -26,7 +26,7 @@ GEMINI_API_KEY = "AIzaSyCEFTVBWhuQEEZJfSkP5osLEUZqtvM9Uq0"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.41.175']
+ALLOWED_HOSTS = ['192.168.41.175', '192.168.1.2', '127.0.0.1', 'localhost', '0.0.0.0']
 
 
 # Application definition
@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "apps.dashboard",
     "apps.preferences",
     'apps.workouts',
-    'apps.hobbies'
+    'apps.hobbies',
+    'apps.nutrition'
 ]
 
 MIDDLEWARE = [
