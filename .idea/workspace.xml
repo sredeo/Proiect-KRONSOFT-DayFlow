@@ -7,9 +7,12 @@
     <list default="true" id="95163bde-5f44-46b6-b537-63bcf3b73d1b" name="Changes" comment="added dashboard app without Google Maps API">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/DjangoProject/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/DjangoProject/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/dashboard/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/dashboard/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/users/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/workouts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/workouts/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/workouts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/workouts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/workouts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/workouts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/gym.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/gym.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/hobbies.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/hobbies.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +49,10 @@
     &quot;accountId&quot;: &quot;e67451de-4da8-4756-ab27-04ff23a53d6c&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -61,7 +68,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "git-widget-placeholder": "backend-dashboard",
+    "git-widget-placeholder": "frontback-workouts+hobbies",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

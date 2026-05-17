@@ -1,7 +1,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.41.175:8000/api';
+const BASE_URL = 'http://192.168.40.42:8000/api';
 
 export const TokenStorage = {
   async getAccess(): Promise<string | null> {
@@ -161,4 +161,132 @@ export const UsersAPI = {
       body: JSON.stringify({ old_password, new_password }),
     });
   },
+};
+
+export interface Exercise {
+  id: number;
+  name: string;
+  muscle_group: string;
+}
+
+export interface ExerciseSet {
+  id?: number;
+  exercise: number;
+  exercise_name?: string;
+  set_number: number;
+  reps: number;
+  weight_kg: string; // DecimalField vine adesea ca string în JSON
+}
+
+export interface WorkoutSession {
+  id: number;
+  user: number;
+  date: string;
+  notes: string;
+  is_completed: boolean;
+  sets: ExerciseSet[];
+}
+
+export interface WeeklySplit {
+  id: number;
+  day_of_week: string;
+  muscle_group: string;
+  exercises: number[]; // Array de ID-uri de exerciții
+}
+
+export const WorkoutsAPI = {
+  getMuscleGroups: () => apiFetch<string[]>('/workouts/exercises/muscle_groups/'),
+
+  getExercises: (muscleGroup?: string) => {
+    const query = muscleGroup ? `?muscle_group=${muscleGroup}` : '';
+    return apiFetch<Exercise[]>(`/workouts/exercises/${query}`);
+  },
+
+  getWeeklySplit: () => apiFetch<WeeklySplit[]>('/workouts/split/'),
+
+  setWeeklySplit: (data: { day_of_week: string; muscle_group: string; exercises?: number[] }) =>
+    apiFetch<WeeklySplit>('/workouts/split/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateWeeklySplit: (splitId: number, data: { day_of_week?: string; muscle_group?: string; exercises: number[] }) =>
+    apiFetch<WeeklySplit>(`/workouts/split/${splitId}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+
+  startSession: (notes: string = "") =>
+    apiFetch<WorkoutSession>('/workouts/start/', {
+      method: 'POST',
+      body: JSON.stringify({ notes }),
+    }),
+
+  logSet: (sessionId: number, data: { exercise_id: number; set_number: number; reps: number; weight_kg: number }) =>
+    apiFetch<ExerciseSet>(`/workouts/sessions/${sessionId}/log/`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  finishSession: (sessionId: number) =>
+    apiFetch<WorkoutSession>(`/workouts/sessions/${sessionId}/finish/`, {
+      method: 'POST',
+    }),
+    getExerciseHistory: (exerciseId: number) =>
+    apiFetch<{ date: string; sets: ExerciseSet[] }>(`/workouts/exercises/${exerciseId}/history/`),
+
+
+  deleteSet: (setId: number) =>
+    apiFetch<void>(`/workouts/sets/${setId}/`, {
+      method: 'DELETE',
+    }),
+
+  deleteWeeklySplit: (splitId: number) =>
+    apiFetch<void>(`/workouts/split/${splitId}/`, {
+      method: 'DELETE',
+    }),
+};
+
+export interface Hobby {
+  id: number;
+  name: string;
+  description: string;
+  weekly_goal: number;
+  preferred_duration_mins: number;
+  energy_required: 'Low' | 'Medium' | 'High';
+  current_streak: number;
+  progress_this_week: number;
+  created_at?: string;
+}
+
+export interface HobbyLog {
+  id?: number;
+  hobby: number;
+  date?: string;
+  duration_mins: number;
+  completed: boolean;
+}
+
+export const HobbiesAPI = {
+  getHobbies: () => apiFetch<Hobby[]>('/hobbies/'),
+
+  createHobby: (data: Partial<Hobby>) =>
+    apiFetch<Hobby>('/hobbies/', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+  deleteHobby: (id: number) =>
+    apiFetch<void>(`/hobbies/${id}/`, {
+      method: 'DELETE'
+    }),
+
+  suggestHobby: (minutes: number, energy: string) =>
+    apiFetch<{ hobby?: string; reason?: string; error?: string }>(`/hobbies/suggest/?minutes=${minutes}&energy=${energy}`),
+
+  logSession: (data: { hobby: number; duration_mins: number; completed?: boolean }) =>
+    apiFetch<HobbyLog>('/hobbies/log/', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
 };
