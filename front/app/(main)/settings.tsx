@@ -7,12 +7,8 @@ import {
   Modal, Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// 2. Make sure to import AuthAPI here
 import { SettingsAPI, UsersAPI, DashboardAPI, AuthAPI } from '../../api';
 import { useAuth } from '../_layout';
-// 3. Remove the SettingsScreenProps!
-
-
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -150,7 +146,7 @@ export default function SettingsScreen() {
   const handleLogout = async () => {
     await AuthAPI.logout();
     logoutState();
-    router.replace('/login'); // Instantly kick them to the login screen
+    router.replace('/login');
   };
 
   return (

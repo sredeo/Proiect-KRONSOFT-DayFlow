@@ -8,7 +8,7 @@ def _determine_origin(user, target_date, start_time, origin_preference, custom_o
         return getattr(user, 'default_location', 'București, România')
     elif origin_preference == "custom" and custom_origin:
         return custom_origin
-    else:  # Default: 'previous'
+    else:
         previous_task = Task.objects.filter(
             user=user, date=target_date, end_time__lte=start_time
         ).order_by("-end_time").first()
@@ -18,11 +18,10 @@ def _determine_origin(user, target_date, start_time, origin_preference, custom_o
         return getattr(user, 'default_location', 'București, România')
 
 def calculate_transit_time_google(origin: str, destination: str, mode: str) -> int:
-    """Apeleaza Google Maps Distance Matrix API."""
+
     if not origin or not destination:
         return 0
 
-    # Mapam modurile noastre la cele pe care le intelege Google
     mode_mapping = {
         "car": "driving",
         "walking": "walking",
@@ -37,15 +36,13 @@ def calculate_transit_time_google(origin: str, destination: str, mode: str) -> i
         response = requests.get(url)
         data = response.json()
 
-        # Verificam daca Google a gasit rute
         if data['status'] == 'OK' and data['rows'][0]['elements'][0]['status'] == 'OK':
-            # Extragem timpul in secunde si transformam in minute
             duration_seconds = data['rows'][0]['elements'][0]['duration']['value']
             return duration_seconds // 60
     except Exception as e:
         print(f"Eroare la integrarea Google Maps: {e}")
 
-    return 0  # Daca ceva pica, returnam 0 ca fallback
+    return 0
 
 
 def create_task(user, validated_data: dict) -> Task:

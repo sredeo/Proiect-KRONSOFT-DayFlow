@@ -9,13 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router'; // <-- 1. Import useRouter
+import { useRouter } from 'expo-router';
 import { AuthAPI } from './../api';
 import { useAuth } from './_layout';
 
-// 2. Remove the Props type, we don't need it anymore
 export default function LoginScreen() {
-  const router = useRouter(); // <-- 3. Initialize the router
+  const router = useRouter();
   const { loginState } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +30,7 @@ export default function LoginScreen() {
     try {
       await AuthAPI.login(email.trim().toLowerCase(), password);
 
-      loginState(); // <--- INSTANTLY updates RootLayout! No more race conditions.
+      loginState();
       router.replace('/');
 
     } catch (e: any) {

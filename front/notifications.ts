@@ -45,32 +45,25 @@ export async function requestNotificationPermissions() {
 }
 
 export async function scheduleTransitNotifications(tasks: Task[], notificationsEnabled: boolean) {
-  // 1. Anulăm toate alarmele vechi ca să nu primim duplicate dacă am modificat un task
+
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  // 2. Dacă utilizatorul a oprit notificările din Setări, ne oprim aici
   if (!notificationsEnabled) return;
 
   const now = new Date();
 
-  // 3. Trecem prin fiecare task și programăm o alarmă
   for (const task of tasks) {
     if (!task.estimated_transit_time || task.estimated_transit_time <= 0) continue;
 
-    // Extragem anul, luna, ziua, ora și minutul din string-urile venite de la backend
     const [year, month, day] = task.date.split('-');
     const [hour, minute] = task.start_time.split(':');
 
-    // Ora exactă la care începe task-ul
     const taskTime = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
 
-    // Scădem timpul de tranzit calculat de Google Maps
     const leaveTime = new Date(taskTime.getTime() - task.estimated_transit_time * 60000);
 
-    // Setăm alerta cu 5 minute înainte să trebuiască să iasă pe ușă
     const alertTime = new Date(leaveTime.getTime() - 5 * 60000);
 
-    // Programăm notificarea doar dacă ora de alertă este în viitor
     if (alertTime > now) {
      await Notifications.scheduleNotificationAsync({
         content: {

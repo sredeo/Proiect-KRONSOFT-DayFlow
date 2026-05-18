@@ -5,13 +5,11 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import * as NavigationBar from 'expo-navigation-bar';
 import { TokenStorage } from '../api';
 
-// 1. THE FIX: Create a Global Auth Context
 const AuthContext = createContext({
   loginState: () => {},
   logoutState: () => {}
 });
 
-// We export this hook so login.tsx and settings.tsx can use it!
 export const useAuth = () => useContext(AuthContext);
 
 export default function RootLayout() {
@@ -19,7 +17,6 @@ export default function RootLayout() {
   const segments = useSegments();
   const router = useRouter();
 
-  // Hide Android System Bar
   useEffect(() => {
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden');
@@ -27,7 +24,6 @@ export default function RootLayout() {
     }
   }, [segments]);
 
-  // Load token ONLY on first app launch
   useEffect(() => {
     const initAuth = async () => {
       const token = await TokenStorage.getAccess();
@@ -36,7 +32,6 @@ export default function RootLayout() {
     initAuth();
   }, []);
 
-  // Secure Routing Logic
   useEffect(() => {
     if (isAuthenticated === null) return;
 
@@ -57,7 +52,6 @@ export default function RootLayout() {
     );
   }
 
-  // Wrap the app in the provider so other pages can update the state!
   return (
     <AuthContext.Provider value={{
       loginState: () => setIsAuthenticated(true),

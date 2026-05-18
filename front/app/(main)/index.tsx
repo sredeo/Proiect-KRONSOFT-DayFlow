@@ -142,7 +142,7 @@ export default function HomeScreen() {
   }, [newTask.custom_origin, newTask.origin_preference, showOriginSuggestions]);
 
 
-  // Helper function to convert "HH:MM:SS" to total minutes for easy comparison
+
   const timeToMinutes = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 60 + minutes;
@@ -152,16 +152,16 @@ export default function HomeScreen() {
     if (isOfflineMode) return Alert.alert("Offline Mode", "You cannot create tasks while the app is in offline mode.");
     if (!newTask.title) return alert("Please add a title!");
 
-    // 1. Calculate minutes for the new task
+
     const newStart = timeToMinutes(newTask.start_time);
     const newEnd = timeToMinutes(newTask.end_time);
 
-    // 2. Validate that end time is after start time
+
     if (newStart >= newEnd) {
       return Alert.alert("Invalid Time", "The task's end time must be after its start time.");
     }
 
-    // 3. Check for exact overlaps against existing tasks
+
     const hasOverlap = tasks.some(task => {
       const existingStart = timeToMinutes(task.start_time);
       const existingEnd = timeToMinutes(task.end_time);
@@ -175,20 +175,20 @@ export default function HomeScreen() {
       );
     }
 
-    // 4. SMART TRANSIT CHECK: Check if you have enough time to travel!
+
     if (liveTransit !== null && liveTransit > 0) {
-      // Find all tasks that finish before this new one starts
+
       const earlierTasks = tasks.filter(t => timeToMinutes(t.end_time) <= newStart);
 
       if (earlierTasks.length > 0) {
-        // Sort them to find the one that happens immediately before
+
         earlierTasks.sort((a, b) => timeToMinutes(b.end_time) - timeToMinutes(a.end_time));
         const previousTask = earlierTasks[0];
 
-        // Calculate how many free minutes you have between them
+
         const gapMinutes = newStart - timeToMinutes(previousTask.end_time);
 
-        // If the travel time is longer than your free time, block it!
+
         if (gapMinutes < liveTransit) {
           return Alert.alert(
             "Transit Time Conflict 🏃‍♂️💨",
