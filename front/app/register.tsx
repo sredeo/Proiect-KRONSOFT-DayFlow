@@ -11,13 +11,12 @@ import {
   View,
 } from 'react-native';
 import { AuthAPI } from './../api';
+import { useRouter } from 'expo-router';
 
-type RegisterScreenProps = {
-  onRegister: () => void;
-  onSwitchToLogin: () => void;
-};
 
-export default function RegisterScreen({ onRegister, onSwitchToLogin }: RegisterScreenProps) {
+
+export default function RegisterScreen() {
+  const router = useRouter();
   const [form, setForm] = useState({
     email: '',
     username: '',
@@ -54,7 +53,7 @@ export default function RegisterScreen({ onRegister, onSwitchToLogin }: Register
         password_confirm,
       });
       Alert.alert('Success!', 'Account created. Please log in.', [
-        { text: 'OK', onPress: onRegister },
+        { text: 'OK', onPress: () => router.replace('/login') },
       ]);
     } catch (e: any) {
       Alert.alert('Registration error', e?.message ?? 'Something went wrong');
@@ -139,7 +138,7 @@ export default function RegisterScreen({ onRegister, onSwitchToLogin }: Register
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.textButton} onPress={onSwitchToLogin} disabled={loading}>
+          <TouchableOpacity style={styles.textButton} onPress={() => router.replace('/login')} disabled={loading}>
             <Text style={styles.loginText}>Already have an account? Sign in</Text>
           </TouchableOpacity>
         </View>
