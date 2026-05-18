@@ -141,9 +141,41 @@ export default function HomeScreen() {
     return () => clearTimeout(delayDebounceFn);
   }, [newTask.custom_origin, newTask.origin_preference, showOriginSuggestions]);
 
+
+  const timeToMinutes = (timeStr: string) => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
   const handleCreateTask = async () => {
     if (isOfflineMode) return Alert.alert("Offline Mode", "You cannot create tasks while the app is in offline mode.");
     if (!newTask.title) return alert("Please add a title!");
+
+
+    const newStart = timeToMinutes(newTask.start_time);
+    const newEnd = timeToMinutes(newTask.end_time);
+
+
+    if (newStart >= newEnd) {
+      return Alert.alert("Invalid Time", "The task's end time must be after its start time.");
+    }
+
+
+    const hasOverlap = tasks.some(task => {
+      const existingStart = timeToMinutes(task.start_time);
+      const existingEnd = timeToMinutes(task.end_time);
+
+
+      return (newStart < existingEnd) && (newEnd > existingStart);
+    });
+
+    if (hasOverlap) {
+      return Alert.alert(
+        "Time Conflict ⚠️",
+        "You already have a task scheduled during this time frame. Please choose a different time."
+      );
+    }
+
 
     try {
       setIsSubmitting(true);

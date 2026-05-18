@@ -21,7 +21,7 @@ export default function SettingsScreen() {
   const [transitNotif, setTransitNotif] = useState(true);
   const [hobbyNotif, setHobbyNotif] = useState(true);
 
-  const [darkMode, setDarkMode] = useState(false);
+
   const [offline, setOffline] = useState(false);
 
   const [defaultLocation, setDefaultLocation] = useState("");
@@ -54,9 +54,8 @@ export default function SettingsScreen() {
         setFirstName(user.first_name || "");
         setLastName(user.last_name || "");
 
-        const storedDarkMode = await AsyncStorage.getItem('dark_mode');
         const storedOfflineMode = await AsyncStorage.getItem('offline_mode');
-        setDarkMode(storedDarkMode === 'true');
+
         setOffline(storedOfflineMode === 'true');
       } catch (error) {
         console.error("Error loading settings:", error);
@@ -91,10 +90,6 @@ export default function SettingsScreen() {
     catch (e) { setHobbyNotif(!value); }
   };
 
-  const toggleDarkMode = async (value: boolean) => {
-    setDarkMode(value);
-    await AsyncStorage.setItem('dark_mode', String(value));
-  };
 
   const toggleOfflineMode = async (value: boolean) => {
     setOffline(value);
@@ -173,7 +168,6 @@ export default function SettingsScreen() {
             <Text style={styles.sectionHeader}>Preferences</Text>
             <SettingRow label="Transit Notifications" value={transitNotif} onToggle={toggleTransit} />
             <SettingRow label="Hobby Notifications" value={hobbyNotif} onToggle={toggleHobby} />
-            <SettingRow label="Dark Mode" value={darkMode} onToggle={toggleDarkMode} />
             <SettingRow label="Offline Mode" value={offline} onToggle={toggleOfflineMode} />
           </View>
 
