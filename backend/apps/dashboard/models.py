@@ -7,6 +7,7 @@ class TaskCategory(models.TextChoices):
     WORKOUT = "workout", "Workout"
     MEETING = "meeting", "Întâlnire"
     SHOPPING = "shopping", "Cumpărături"
+    HOBBY = "hobby", "Hobby"
     OTHER = "other", "Altele"
 
 

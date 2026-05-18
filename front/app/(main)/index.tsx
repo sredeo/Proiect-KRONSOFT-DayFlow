@@ -11,12 +11,12 @@ import { DashboardAPI, Task, SettingsAPI } from "../../api";
 import { requestNotificationPermissions, scheduleTransitNotifications } from "../../notifications";
 
 const categoryStyles: Record<string, any> = {
-  meeting: { background: "#fff", tag: "#eef2ff", accent: "#4338ca", icon: "🤝" },
-  work: { background: "#fff", tag: "#e0f2fe", accent: "#0284c7", icon: "💻" },
-  workout: { background: "#fff", tag: "#dcfce7", accent: "#16a34a", icon: "🏋️" },
-  hobby: { background: "#fff", tag: "#fee2e2", accent: "#dc2626", icon: "🎸" },
-  other: { background: "#fff", tag: "#f3f4f6", accent: "#4b5563", icon: "📌" },
-  default: { background: "#fff", tag: "#f3f4f6", accent: "#4b5563", icon: "📌" },
+  meeting: { background: "#fff", tag: "#eef2ff", accent: "#4338ca" },
+  work: { background: "#fff", tag: "#e0f2fe", accent: "#0284c7" },
+  workout: { background: "#fff", tag: "#dcfce7", accent: "#16a34a" },
+  hobby: { background: "#fff", tag: "#fee2e2", accent: "#dc2626" },
+  other: { background: "#fff", tag: "#f3f4f6", accent: "#4b5563" },
+  default: { background: "#fff", tag: "#f3f4f6", accent: "#4b5563" },
 };
 
 export default function HomeScreen() {
@@ -230,7 +230,7 @@ export default function HomeScreen() {
                           <Text style={styles.itemTitle}>{item.title}</Text>
                           <View style={[styles.tag, { backgroundColor: category.tag, alignSelf: 'flex-start' }]}>
                             <Text style={[styles.tagText, { color: category.accent }]}>
-                              {category.icon} {item.category.toUpperCase()}
+                              {item.category.toUpperCase()}
                             </Text>
                           </View>
                         </View>
@@ -239,14 +239,16 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                       </View>
 
+
                       {item.location ? (
-                        <Text style={styles.itemSubtitle}>📍 {item.location}</Text>
+                        <Text style={styles.itemSubtitle}>{item.location}</Text>
                       ) : null}
+
 
                       {item.estimated_transit_time > 0 ? (
                         <View style={styles.transitBadge}>
                           <Text style={styles.transitText}>
-                            ⏱️ Transit: {item.estimated_transit_time} min ({item.transport_mode === 'car' ? '🚗' : item.transport_mode === 'walking' ? '🚶' : '🚌'})
+                            Transit: {item.estimated_transit_time} min ({item.transport_mode})
                           </Text>
                         </View>
                       ) : null}

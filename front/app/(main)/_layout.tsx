@@ -30,11 +30,33 @@ export default function MainLayout() {
           tabBarIndicatorStyle: { backgroundColor: '#4F46E5', height: 3, top: 0 },
         }}
       >
-        <SwipeableTabs.Screen name="index" options={{ title: "Home", tabBarIcon: ({ color }: {color: string}) => <Feather name="home" size={22} color={color} /> }} />
-        <SwipeableTabs.Screen name="gym" options={{ title: "Gym", tabBarIcon: ({ color }: {color: string}) => <Feather name="activity" size={22} color={color} /> }} />
-        <SwipeableTabs.Screen name="nutrition" options={{ title: "Eats", tabBarIcon: ({ color }: {color: string}) => <Feather name="coffee" size={22} color={color} /> }} />
-        <SwipeableTabs.Screen name="hobbies" options={{ title: "Stars", tabBarIcon: ({ color }: {color: string}) => <Feather name="star" size={22} color={color} /> }} />
-        <SwipeableTabs.Screen name="settings" options={{ title: "Settings", tabBarIcon: ({ color }: {color: string}) => <Feather name="settings" size={22} color={color} /> }} />
+       <SwipeableTabs.Screen
+          name="index"
+          options={{ title: "Home", tabBarIcon: ({ color }: {color: string}) => <Feather name="home" size={22} color={color} /> }}
+        />
+
+
+        <SwipeableTabs.Screen
+          name="gym"
+          options={{ title: "Workout", tabBarIcon: ({ color }: {color: string}) => <Feather name="activity" size={22} color={color} /> }}
+        />
+
+
+        <SwipeableTabs.Screen
+          name="nutrition"
+          options={{ title: "Nutrition", tabBarIcon: ({ color }: {color: string}) => <Feather name="coffee" size={22} color={color} /> }}
+        />
+
+
+        <SwipeableTabs.Screen
+          name="hobbies"
+          options={{ title: "Hobby", tabBarIcon: ({ color }: {color: string}) => <Feather name="star" size={22} color={color} /> }}
+        />
+
+        <SwipeableTabs.Screen
+          name="settings"
+          options={{ title: "Settings", tabBarIcon: ({ color }: {color: string}) => <Feather name="settings" size={22} color={color} /> }}
+        />
       </SwipeableTabs>
     </View>
   );
