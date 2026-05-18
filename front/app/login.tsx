@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { AuthAPI } from './../api';
 
 type LoginScreenProps = {
   onLogin: () => void;
@@ -9,6 +19,24 @@ type LoginScreenProps = {
 export default function LoginScreen({ onLogin, onSwitchToRegister }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      Alert.alert('Error', 'Fill in email and password');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await AuthAPI.login(email.trim().toLowerCase(), password);
+      onLogin();
+    } catch (e: any) {
+      Alert.alert('Login error', e?.message ?? 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,6 +53,8 @@ export default function LoginScreen({ onLogin, onSwitchToRegister }: LoginScreen
           style={styles.input}
           keyboardType="email-address"
           autoCapitalize="none"
+          autoCorrect={false}
+          editable={!loading}
         />
         <TextInput
           value={password}
@@ -33,13 +63,22 @@ export default function LoginScreen({ onLogin, onSwitchToRegister }: LoginScreen
           placeholderTextColor="#999"
           style={styles.input}
           secureTextEntry
+          editable={!loading}
         />
 
-        <TouchableOpacity style={styles.button} onPress={onLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Login</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.textButton} onPress={onSwitchToRegister}>
+        <TouchableOpacity style={styles.textButton} onPress={onSwitchToRegister} disabled={loading}>
           <Text style={styles.loginText}>Don't have an account? Create one</Text>
         </TouchableOpacity>
       </View>
@@ -82,7 +121,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#000',
     textAlign: 'center',
-    backgroundColor: 'transparent',
     marginBottom: 75,
   },
   input: {
@@ -100,6 +138,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',

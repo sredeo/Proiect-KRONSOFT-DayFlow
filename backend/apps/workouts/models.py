@@ -38,13 +38,13 @@ class ExerciseSet(models.Model):
 
 class WeeklySplit(models.Model):
         DAYS_OF_WEEK = [
-            ('Luni', 'Luni'),
-            ('Marti', 'Marti'),
-            ('Miercuri', 'Miercuri'),
-            ('Joi', 'Joi'),
-            ('Vineri', 'Vineri'),
-            ('Sambata', 'Sambata'),
-            ('Duminica', 'Duminica'),
+            ('Monday', 'Monday'),
+            ('Tuesday', 'Tuesday'),
+            ('Wednesday', 'Wednesday'),
+            ('Thursday', 'Thursday'),
+            ('Friday', 'Friday'),
+            ('Saturday', 'Saturday'),
+            ('Sunday', 'Sunday'),
         ]
         user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='weekly_splits')
         day_of_week = models.CharField(max_length=15, choices=DAYS_OF_WEEK)

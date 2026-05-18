@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import GymScreen from "./app/gym";
@@ -11,6 +12,7 @@ import LoginScreen from "./app/login";
 import NutritionScreen from "./app/nutrition";
 import RegisterScreen from "./app/register";
 import SettingsScreen from "./app/settings";
+import { AuthAPI, TokenStorage } from "./api";
 
 const baseTabBarStyle = {
   height: 70,
@@ -23,22 +25,54 @@ const baseTabBarStyle = {
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
+type AuthState = "loading" | "unauthenticated" | "authenticated";
 
-  if (!isAuthenticated) {
+export default function App() {
+  const [authState, setAuthState] = useState<AuthState>("loading");
+  const [authScreen, setAuthScreen] = useState<"login" | "register">("login");
+
+  useEffect(() => {
+    (async () => {
+      const token = await TokenStorage.getAccess();
+      setAuthState(token ? "authenticated" : "unauthenticated");
+    })();
+  }, []);
+
+  const handleLogin = useCallback(() => {
+    setAuthState("authenticated");
+  }, []);
+
+  const handleRegister = useCallback(() => {
+    setAuthScreen("login");
+    setAuthState("unauthenticated");
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    await AuthAPI.logout();
+    setAuthScreen("login");
+    setAuthState("unauthenticated");
+  }, []);
+
+  if (authState === "loading") {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#7c3aed" />
+      </View>
+    );
+  }
+
+  if (authState === "unauthenticated") {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        {authScreen === 'login' ? (
+        {authScreen === "login" ? (
           <LoginScreen
-            onLogin={() => setIsAuthenticated(true)}
-            onSwitchToRegister={() => setAuthScreen('register')}
+            onLogin={handleLogin}
+            onSwitchToRegister={() => setAuthScreen("register")}
           />
         ) : (
           <RegisterScreen
-            onRegister={() => setIsAuthenticated(true)}
-            onSwitchToLogin={() => setAuthScreen('login')}
+            onRegister={handleRegister}
+            onSwitchToLogin={() => setAuthScreen("login")}
           />
         )}
       </GestureHandlerRootView>
@@ -53,11 +87,11 @@ export default function App() {
           screenOptions={({ route }) => ({
             headerShown: false,
             tabBarShowLabel: false,
-            tabBarActiveTintColor: '#000',
-            tabBarInactiveTintColor: '#666',
+            tabBarActiveTintColor: "#000",
+            tabBarInactiveTintColor: "#666",
             tabBarStyle:
-              route.name === 'Settings' ? { display: 'none' } : baseTabBarStyle,
-            animation: 'shift',
+              route.name === "Settings" ? { display: "none" } : baseTabBarStyle,
+            animation: "shift",
           })}
         >
           <Tab.Screen
@@ -98,7 +132,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Settings"
-            component={SettingsScreen}
+            children={() => <SettingsScreen onLogout={handleLogout} />}
             options={{
               tabBarIcon: ({ color }) => (
                 <Feather name="settings" size={22} color={color} />
@@ -110,3 +144,12 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f2f4f8",
+  },
+});

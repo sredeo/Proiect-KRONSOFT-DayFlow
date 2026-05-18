@@ -103,8 +103,6 @@ class WeeklySplitView(generics.ListCreateAPIView):
         # Cand salveaza, asociaza automat ziua de antrenament cu userul logat
         serializer.save(user=self.request.user)
 
-# ... restul codului tău din views.py ...
-
 # 5. Modificarea sau Ștergerea unui Set (ExerciseSet)
 class ExerciseSetDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -133,3 +131,51 @@ class WeeklySplitDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         # Userul poate șterge doar split-ul lui
         return WeeklySplit.objects.filter(user=self.request.user)
+
+
+# 7. Endpoint pentru Istoricul Exercițiului (Progressive Overload)
+class ExerciseHistoryView(APIView):
+    """GET /api/workouts/exercises/<exercise_id>/history/"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, exercise_id):
+        # 1. Căutăm cea mai recentă sesiune FINALIZATĂ a utilizatorului
+        # în care a logat cel puțin un set pentru acest exercițiu.
+        last_set = ExerciseSet.objects.filter(
+            session__user=request.user,
+            session__is_completed=True,
+            exercise_id=exercise_id
+        ).order_by('-session__date', '-session__id').first()
+
+        if not last_set:
+            return Response(
+                {"message": "Nu există istoric pentru acest exercițiu."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # 2. Extragem toate seturile din acea sesiune pentru exercițiul dat
+        past_sets = ExerciseSet.objects.filter(
+            session=last_set.session,
+            exercise_id=exercise_id
+        ).order_by('set_number')
+
+        # 3. Returnăm data antrenamentului trecut și seturile efectuate
+        serializer = ExerciseSetSerializer(past_sets, many=True)
+        return Response({
+            "date": last_set.session.date,
+            "sets": serializer.data
+        }, status=status.HTTP_200_OK)
+
+
+# 8. Ștergerea sau vizualizarea unei sesiuni (în caz că apasă Start din greșeală)
+class WorkoutSessionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: Vezi detaliile sesiunii
+    DELETE: Șterge sesiunea curentă (anulează antrenamentul)
+    """
+    serializer_class = WorkoutSessionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Securitate: Poate șterge doar propriile sesiuni
+        return WorkoutSession.objects.filter(user=self.request.user)
