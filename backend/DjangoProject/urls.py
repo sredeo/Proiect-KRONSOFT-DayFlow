@@ -23,5 +23,6 @@ urlpatterns = [
     path("api/", include("apps.dashboard.urls")),
     path("api/", include("apps.preferences.urls")),
     path("api/", include("apps.workouts.urls")),
-    path('api/', include('apps.hobbies.urls'))
+    path('api/', include('apps.hobbies.urls')),
+    path("api/", include("apps.nutrition.urls")),
 ]
