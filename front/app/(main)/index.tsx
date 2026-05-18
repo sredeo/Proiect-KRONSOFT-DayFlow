@@ -7,8 +7,8 @@ import {
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-import { DashboardAPI, Task, SettingsAPI } from "../api";
-import { requestNotificationPermissions, scheduleTransitNotifications } from "../notifications";
+import { DashboardAPI, Task, SettingsAPI } from "../../api";
+import { requestNotificationPermissions, scheduleTransitNotifications } from "../../notifications";
 
 const categoryStyles: Record<string, any> = {
   meeting: { background: "#fff", tag: "#eef2ff", accent: "#4338ca", icon: "🤝" },
@@ -184,7 +184,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f8f9fa" />
+      <StatusBar barStyle="dark-content" backgroundColor="#f8f9fa" hidden={true} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <View style={styles.header}>
@@ -453,87 +453,113 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#f8f9fa" },
-  scroll: { flex: 1 },
-  content: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 110 },
 
-  header: { marginBottom: 32 },
-  greeting: { fontSize: 32, fontWeight: "800", color: "#111827", marginBottom: 4, letterSpacing: -0.5 },
-  date: { fontSize: 15, color: "#6b7280", fontWeight: "500", textTransform: "capitalize" },
-  offlineBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fef3c7', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, marginTop: 12, gap: 8 },
-  offlineBadgeText: { color: '#b45309', fontSize: 13, fontWeight: '600' },
+  screen: { flex: 1, backgroundColor: "#F2F4F7" },
+  scroll: { flex: 1 },
+  content: { paddingHorizontal: 24, paddingTop: 32, paddingBottom: 130 },
+
+  header: { marginBottom: 36 },
+  greeting: { fontSize: 36, fontWeight: "900", color: "#0F172A", marginBottom: 6, letterSpacing: -1 },
+  date: { fontSize: 16, color: "#64748B", fontWeight: "600", textTransform: "capitalize", letterSpacing: 0.5 },
+
+  offlineBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FEF3C7', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, marginTop: 16, gap: 8 },
+  offlineBadgeText: { color: '#B45309', fontSize: 13, fontWeight: '700' },
 
   section: { flex: 1 },
-  emptyState: { alignItems: 'center', marginTop: 80 },
-  emptyStateEmoji: { fontSize: 48, marginBottom: 16 },
-  emptyStateText: { color: '#6b7280', fontSize: 16, fontWeight: '500' },
+  emptyState: { alignItems: 'center', marginTop: 100 },
+  emptyStateEmoji: { fontSize: 64, marginBottom: 20 },
+  emptyStateText: { color: '#94A3B8', fontSize: 18, fontWeight: '600' },
 
-  timelineWrapper: { position: 'relative', marginLeft: 10 },
-  timelineLine: { position: 'absolute', left: 49, top: 20, bottom: 0, width: 2, backgroundColor: '#e5e7eb', zIndex: 0 },
+  timelineWrapper: { position: 'relative', marginLeft: 12 },
+  timelineLine: { position: 'absolute', left: 49, top: 24, bottom: 0, width: 2, backgroundColor: '#E2E8F0', zIndex: 0 },
 
-  timelineItem: { flexDirection: "row", marginBottom: 24, zIndex: 1 },
-  timeColumn: { width: 55, alignItems: 'center', paddingTop: 2 },
-  timeText: { fontSize: 14, fontWeight: "800", color: "#111827" },
-  timeTextEnd: { fontSize: 11, fontWeight: "600", color: "#6b7280", marginTop: 2, marginBottom: 8 },
-  timelineDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 3, borderColor: '#fff', shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 1, elevation: 2 },
+  timelineItem: { flexDirection: "row", marginBottom: 28, zIndex: 1 },
+  timeColumn: { width: 60, alignItems: 'center', paddingTop: 4 },
+  timeText: { fontSize: 15, fontWeight: "800", color: "#0F172A" },
+  timeTextEnd: { fontSize: 12, fontWeight: "600", color: "#94A3B8", marginTop: 4, marginBottom: 10 },
 
-  cardContent: { flex: 1, marginLeft: 16, backgroundColor: "#fff", borderRadius: 16, padding: 16, borderLeftWidth: 5, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 6, elevation: 3 },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
-  itemTitle: { fontSize: 16, fontWeight: "700", color: "#111827", marginBottom: 4 },
-  itemSubtitle: { fontSize: 13, color: "#4b5563", marginBottom: 8, fontWeight: "500" },
+  timelineDot: { width: 16, height: 16, borderRadius: 8, borderWidth: 4, borderColor: '#F2F4F7', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 2 },
 
-  tag: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
-  tagText: { fontSize: 10, fontWeight: "800", textTransform: 'uppercase', letterSpacing: 0.5 },
+  cardContent: {
+    flex: 1,
+    marginLeft: 20,
+    backgroundColor: "#ffffff",
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.03)',
 
-  transitBadge: { backgroundColor: '#f3f4f6', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, marginTop: 4 },
-  transitText: { fontSize: 12, color: '#4b5563', fontWeight: '600' },
+    shadowColor: "#0F172A",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    elevation: 4
+  },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
+  itemTitle: { fontSize: 18, fontWeight: "800", color: "#0F172A", marginBottom: 6, letterSpacing: -0.5 },
+  itemSubtitle: { fontSize: 14, color: "#64748B", marginBottom: 12, fontWeight: "600" },
 
-  fab: { position: 'absolute', bottom: 50, right: 24, width: 60, height: 60, borderRadius: 30, backgroundColor: '#4338ca', justifyContent: 'center', alignItems: 'center', shadowColor: "#4338ca", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 8, elevation: 8 },
-  fabIcon: { fontSize: 32, color: '#fff', fontWeight: '300', marginTop: -2 },
 
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingTop: 12, paddingBottom: 40, height: '85%', shadowColor: "#000", shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.1, shadowRadius: 12, elevation: 20 },
-  modalDragIndicator: { width: 40, height: 4, backgroundColor: '#e5e7eb', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
-  modalTitle: { fontSize: 24, fontWeight: '800', color: '#111827', marginBottom: 24 },
+  tag: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 },
+  tagText: { fontSize: 11, fontWeight: "800", textTransform: 'uppercase', letterSpacing: 0.8 },
 
-  inputLabel: { fontSize: 13, fontWeight: '700', color: '#374151', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
-  input: { backgroundColor: '#f9fafb', borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, padding: 14, marginBottom: 20, fontSize: 16, color: '#111827' },
+  transitBadge: { backgroundColor: '#F1F5F9', alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, marginTop: 4 },
+  transitText: { fontSize: 13, color: '#475569', fontWeight: '700' },
 
-  categoryRow: { flexDirection: 'row', gap: 8, marginBottom: 20, flexWrap: 'wrap' },
-  catBtn: { paddingVertical: 8, paddingHorizontal: 14, borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 20, backgroundColor: '#fff' },
-  catBtnText: { fontSize: 13, fontWeight: '600', color: '#4b5563', textTransform: 'capitalize' },
+  alertBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FEF2F2', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, marginBottom: 12, gap: 6 },
+  alertBannerText: { color: '#991B1B', fontSize: 12, fontWeight: '800' },
 
-  timePickerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#f9fafb', borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 16, padding: 16, marginBottom: 20 },
+  workoutSummary: { backgroundColor: '#F0FDF4', padding: 12, borderRadius: 12, marginTop: 6, borderWidth: 1, borderColor: '#DCFCE7' },
+  workoutSummaryText: { fontSize: 13, color: '#166534', fontWeight: '700' },
+
+
+  fab: { position: 'absolute', bottom: 40, right: 24, width: 64, height: 64, borderRadius: 32, backgroundColor: '#0F172A', justifyContent: 'center', alignItems: 'center', shadowColor: "#0F172A", shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.25, shadowRadius: 14, elevation: 10 },
+  fabIcon: { fontSize: 32, color: '#ffffff', fontWeight: '300', marginTop: -2 },
+
+
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.4)', justifyContent: 'flex-end' },
+  modalContent: { backgroundColor: '#ffffff', borderTopLeftRadius: 32, borderTopRightRadius: 32, padding: 28, paddingTop: 16, paddingBottom: 50, height: '88%', shadowColor: "#000", shadowOffset: { width: 0, height: -10 }, shadowOpacity: 0.1, shadowRadius: 20, elevation: 20 },
+  modalDragIndicator: { width: 48, height: 5, backgroundColor: '#E2E8F0', borderRadius: 3, alignSelf: 'center', marginBottom: 24 },
+  modalTitle: { fontSize: 28, fontWeight: '900', color: '#0F172A', marginBottom: 28, letterSpacing: -0.5 },
+
+  inputLabel: { fontSize: 12, fontWeight: '800', color: '#64748B', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 1 },
+  input: { backgroundColor: '#F8FAFC', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 16, padding: 16, marginBottom: 24, fontSize: 16, color: '#0F172A', fontWeight: '500' },
+
+  categoryRow: { flexDirection: 'row', gap: 10, marginBottom: 24, flexWrap: 'wrap' },
+  catBtn: { paddingVertical: 10, paddingHorizontal: 16, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 99, backgroundColor: '#ffffff' },
+  catBtnText: { fontSize: 14, fontWeight: '700', color: '#64748B', textTransform: 'capitalize' },
+
+  timePickerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#F8FAFC', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 20, padding: 20, marginBottom: 24 },
   timeBlock: { flex: 1, alignItems: 'center' },
-  timeBlockLabel: { fontSize: 11, fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', marginBottom: 6, letterSpacing: 0.5 },
-  clockContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderWidth: 1, borderColor: '#d1d5db', borderRadius: 10, paddingHorizontal: 8 },
-  clockInput: { width: 36, height: 40, textAlign: 'center', fontSize: 16, fontWeight: '700', color: '#111827' },
-  clockDivider: { fontSize: 16, fontWeight: '700', color: '#9ca3af', paddingBottom: 2 },
-  timeRangeArrow: { fontSize: 20, color: '#9ca3af', paddingHorizontal: 12, fontWeight: '300' },
+  timeBlockLabel: { fontSize: 11, fontWeight: '800', color: '#94A3B8', textTransform: 'uppercase', marginBottom: 8, letterSpacing: 1 },
+  clockContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.02, shadowRadius: 4 },
+  clockInput: { width: 40, height: 44, textAlign: 'center', fontSize: 18, fontWeight: '800', color: '#0F172A' },
+  clockDivider: { fontSize: 18, fontWeight: '800', color: '#94A3B8', paddingBottom: 2 },
+  timeRangeArrow: { fontSize: 24, color: '#CBD5E1', paddingHorizontal: 16, fontWeight: '300' },
 
-  originRow: { flexDirection: 'row', gap: 8, marginBottom: 10, flexWrap: 'wrap' },
-  originBtn: { paddingVertical: 8, paddingHorizontal: 12, backgroundColor: '#f3f4f6', borderRadius: 20 },
-  originBtnActive: { backgroundColor: '#e0e7ff' },
-  originBtnText: { color: '#4b5563', fontSize: 12, fontWeight: '600' },
-  originBtnTextActive: { color: '#4338ca' },
+  originRow: { flexDirection: 'row', gap: 10, marginBottom: 12, flexWrap: 'wrap' },
+  originBtn: { paddingVertical: 10, paddingHorizontal: 14, backgroundColor: '#F1F5F9', borderRadius: 99 },
+  originBtnActive: { backgroundColor: '#EEF2FF' },
+  originBtnText: { color: '#64748B', fontSize: 13, fontWeight: '700' },
+  originBtnTextActive: { color: '#4F46E5' },
 
-  transportRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
-  transportBtn: { flex: 1, paddingVertical: 12, borderWidth: 1, borderColor: '#d1d5db', borderRadius: 8, alignItems: 'center', backgroundColor: '#fff' },
-  transportBtnActive: { backgroundColor: '#111827', borderColor: '#111827' },
-  transportBtnText: { color: '#4b5563', fontWeight: '600', fontSize: 13 },
+  transportRow: { flexDirection: 'row', gap: 10, marginBottom: 20 },
+  transportBtn: { flex: 1, paddingVertical: 14, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 16, alignItems: 'center', backgroundColor: '#ffffff' },
+  transportBtnActive: { backgroundColor: '#0F172A', borderColor: '#0F172A' },
+  transportBtnText: { color: '#64748B', fontWeight: '700', fontSize: 14 },
   transportBtnTextActive: { color: '#ffffff' },
 
-  suggestionsContainer: { backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', marginTop: -16, marginBottom: 16, maxHeight: 150, overflow: 'hidden', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },
-  suggestionItem: { padding: 14, borderBottomWidth: 1, borderBottomColor: '#f3f4f6' },
-  suggestionText: { fontSize: 14, color: '#374151' },
+  suggestionsContainer: { backgroundColor: '#ffffff', borderRadius: 16, borderWidth: 1, borderColor: '#E2E8F0', marginTop: -20, marginBottom: 20, maxHeight: 180, overflow: 'hidden', shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 4 },
+  suggestionItem: { padding: 16, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+  suggestionText: { fontSize: 15, color: '#334155', fontWeight: '500' },
 
-  liveValidationBox: { minHeight: 24, marginBottom: 24, justifyContent: 'center' },
-  validationTextNormal: { color: '#6b7280', fontSize: 13, fontStyle: 'italic' },
-  validationTextWarning: { color: '#b45309', fontSize: 13, fontWeight: '600' },
+  liveValidationBox: { minHeight: 30, marginBottom: 28, justifyContent: 'center' },
+  validationTextNormal: { color: '#94A3B8', fontSize: 14, fontStyle: 'italic', fontWeight: '500' },
+  validationTextWarning: { color: '#B45309', fontSize: 14, fontWeight: '700' },
 
-  modalActions: { flexDirection: 'row', gap: 12, marginTop: 10 },
-  cancelBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#f3f4f6', alignItems: 'center' },
-  cancelBtnText: { color: '#4b5563', fontWeight: '700', fontSize: 16 },
-  saveBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#111827', alignItems: 'center' },
-  saveBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 }
+  modalActions: { flexDirection: 'row', gap: 16, marginTop: 16 },
+  cancelBtn: { flex: 1, padding: 18, borderRadius: 16, backgroundColor: '#F1F5F9', alignItems: 'center' },
+  cancelBtnText: { color: '#64748B', fontWeight: '800', fontSize: 16 },
+  saveBtn: { flex: 1, padding: 18, borderRadius: 16, backgroundColor: '#4F46E5', alignItems: 'center', shadowColor: "#4F46E5", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8 },
+  saveBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 16 }
 });

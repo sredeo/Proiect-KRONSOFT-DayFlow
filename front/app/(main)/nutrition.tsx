@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { MealInfo, MacroSummary, NutritionAPI } from '../api';
+import { MealInfo, MacroSummary, NutritionAPI } from '../../api';
 
 const MACRO_COLORS = {
   calories: '#4338ca',

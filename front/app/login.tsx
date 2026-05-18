@@ -9,14 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useRouter } from 'expo-router'; // <-- 1. Import useRouter
 import { AuthAPI } from './../api';
+import { useAuth } from './_layout';
 
-type LoginScreenProps = {
-  onLogin: () => void;
-  onSwitchToRegister: () => void;
-};
-
-export default function LoginScreen({ onLogin, onSwitchToRegister }: LoginScreenProps) {
+// 2. Remove the Props type, we don't need it anymore
+export default function LoginScreen() {
+  const router = useRouter(); // <-- 3. Initialize the router
+  const { loginState } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,14 +30,16 @@ export default function LoginScreen({ onLogin, onSwitchToRegister }: LoginScreen
     setLoading(true);
     try {
       await AuthAPI.login(email.trim().toLowerCase(), password);
-      onLogin();
+
+      loginState(); // <--- INSTANTLY updates RootLayout! No more race conditions.
+      router.replace('/');
+
     } catch (e: any) {
       Alert.alert('Login error', e?.message ?? 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.appName}>Dayflow</Text>
@@ -78,7 +80,7 @@ export default function LoginScreen({ onLogin, onSwitchToRegister }: LoginScreen
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.textButton} onPress={onSwitchToRegister} disabled={loading}>
+        <TouchableOpacity style={styles.textButton} onPress={() => router.push('/register')} disabled={loading}>
           <Text style={styles.loginText}>Don't have an account? Create one</Text>
         </TouchableOpacity>
       </View>

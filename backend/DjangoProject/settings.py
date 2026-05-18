@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-tlxf)-p&bt_5&8^uq0u3iy+jp%m13%acni*%m$g+c^u%u*ea7='
-GEMINI_API_KEY = "AIzaSyCEFTVBWhuQEEZJfSkP5osLEUZqtvM9Uq0"
+GEMINI_API_KEY = "AIzaSyB8LEd9ngdZSkUCuRg4-7K7wMp35atIRkU"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.45', '192.168.1.2', '127.0.0.1', 'localhost', '0.0.0.0','192.168.41.175','192.168.40.42']
+ALLOWED_HOSTS = ['192.168.0.45', '192.168.1.2', '127.0.0.1', 'localhost', '0.0.0.0','192.168.41.175','192.168.40.42',"192.168.40.180"]
 
 
 # Application definition

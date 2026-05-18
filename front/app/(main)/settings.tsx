@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router'; // <-- 1. Use Expo Router instead of Navigation
 import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView, StyleSheet, Switch, Text,
@@ -7,14 +7,16 @@ import {
   Modal, Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SettingsAPI, UsersAPI, DashboardAPI } from '../api';
+// 2. Make sure to import AuthAPI here
+import { SettingsAPI, UsersAPI, DashboardAPI, AuthAPI } from '../../api';
+import { useAuth } from '../_layout';
+// 3. Remove the SettingsScreenProps!
 
-type SettingsScreenProps = {
-  onLogout: () => Promise<void>;
-};
 
-export default function SettingsScreen({ onLogout }: SettingsScreenProps) {
-  const navigation = useNavigation();
+
+export default function SettingsScreen() {
+  const router = useRouter();
+  const { logoutState } = useAuth();
 
   const [transitNotif, setTransitNotif] = useState(true);
   const [hobbyNotif, setHobbyNotif] = useState(true);
@@ -150,17 +152,17 @@ export default function SettingsScreen({ onLogout }: SettingsScreenProps) {
     </TouchableOpacity>
   );
 
+  const handleLogout = async () => {
+    await AuthAPI.logout();
+    logoutState();
+    router.replace('/login'); // Instantly kick them to the login screen
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 1 }}>
 
-          <View style={styles.topRow}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home' as never)}>
-              <Feather name="arrow-left" size={20} color="#000" />
-              <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
-          </View>
 
           <View style={styles.header}>
             <Text style={styles.title}>Settings</Text>
@@ -213,7 +215,7 @@ export default function SettingsScreen({ onLogout }: SettingsScreenProps) {
             <View style={styles.infoRow}><Text style={styles.settingLabel}>Build</Text><Text style={styles.infoText}>1</Text></View>
           </View>
 
-          <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
           <View style={{ height: 40 }} />
@@ -309,5 +311,5 @@ const styles = StyleSheet.create({
   cancelBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#f3f4f6', alignItems: 'center' },
   cancelBtnText: { color: '#4b5563', fontWeight: '700', fontSize: 16 },
   saveBtn: { flex: 1, padding: 16, borderRadius: 12, backgroundColor: '#111827', alignItems: 'center' },
-  saveBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 }
+  saveBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
 });
