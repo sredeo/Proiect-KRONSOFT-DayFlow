@@ -1,7 +1,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.40.42:8000/api';
+const BASE_URL = 'http://192.168.41.175:8000/api';
 
 export const TokenStorage = {
   async getAccess(): Promise<string | null> {
@@ -38,7 +38,13 @@ async function refreshAccessToken(): Promise<string> {
   }
 
   const data = await res.json();
-  await AsyncStorage.setItem('access_token', data.access);
+  
+  if (data.refresh) {
+    await TokenStorage.save(data.access, data.refresh);
+  } else {
+    await AsyncStorage.setItem('access_token', data.access);
+  }
+  
   return data.access;
 }
 
@@ -57,9 +63,10 @@ async function apiFetch<T>(
 
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
 
-  if (res.status === 401 && retry) {
+  if (res.status === 401 && retry && token) {
     const newToken = await refreshAccessToken();
     headers['Authorization'] = `Bearer ${newToken}`;
+    
     const retried = await fetch(`${BASE_URL}${path}`, { ...options, headers });
     if (!retried.ok) throw await parseError(retried);
     return retried.json();
