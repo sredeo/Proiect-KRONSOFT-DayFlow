@@ -1,7 +1,8 @@
-
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.41.175:8000/api';
+const BASE_URL = 'http://192.168.40.180:8000/api'
+
 
 export const TokenStorage = {
   async getAccess(): Promise<string | null> {

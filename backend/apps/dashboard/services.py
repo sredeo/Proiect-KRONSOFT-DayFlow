@@ -1,14 +1,14 @@
 import requests
 from django.conf import settings
 from .models import Task
-
+from django.db.models import Q
 
 def _determine_origin(user, target_date, start_time, origin_preference, custom_origin):
     if origin_preference == "home":
         return getattr(user, 'default_location', 'București, România')
     elif origin_preference == "custom" and custom_origin:
         return custom_origin
-    else:  # Default: 'previous'
+    else:
         previous_task = Task.objects.filter(
             user=user, date=target_date, end_time__lte=start_time
         ).order_by("-end_time").first()
@@ -18,11 +18,10 @@ def _determine_origin(user, target_date, start_time, origin_preference, custom_o
         return getattr(user, 'default_location', 'București, România')
 
 def calculate_transit_time_google(origin: str, destination: str, mode: str) -> int:
-    """Apeleaza Google Maps Distance Matrix API."""
+
     if not origin or not destination:
         return 0
 
-    # Mapam modurile noastre la cele pe care le intelege Google
     mode_mapping = {
         "car": "driving",
         "walking": "walking",
@@ -37,15 +36,13 @@ def calculate_transit_time_google(origin: str, destination: str, mode: str) -> i
         response = requests.get(url)
         data = response.json()
 
-        # Verificam daca Google a gasit rute
         if data['status'] == 'OK' and data['rows'][0]['elements'][0]['status'] == 'OK':
-            # Extragem timpul in secunde si transformam in minute
             duration_seconds = data['rows'][0]['elements'][0]['duration']['value']
             return duration_seconds // 60
     except Exception as e:
         print(f"Eroare la integrarea Google Maps: {e}")
 
-    return 0  # Daca ceva pica, returnam 0 ca fallback
+    return 0
 
 
 def create_task(user, validated_data: dict) -> Task:
@@ -73,7 +70,19 @@ def create_task(user, validated_data: dict) -> Task:
 
 
 def get_daily_timeline(user, specific_date):
-    return Task.objects.filter(user=user, date=specific_date).order_by("start_time")
+    weekday_str = str(specific_date.weekday())
+
+
+    tasks = Task.objects.filter(
+        Q(user=user, date=specific_date, recurring_days__exact="") |
+        Q(user=user, date=specific_date, recurring_days__isnull=True) |
+        (
+            Q(user=user, date__lte=specific_date, recurring_days__contains=weekday_str) &
+            (Q(recurrence_end_date__gte=specific_date) | Q(recurrence_end_date__isnull=True))
+        )
+    ).order_by("start_time")
+
+    return tasks
 
 def estimate_task_transit(user, target_date, start_time, destination, transport_mode, origin_preference="previous", custom_origin="") -> int:
     if not destination or not start_time or not target_date:

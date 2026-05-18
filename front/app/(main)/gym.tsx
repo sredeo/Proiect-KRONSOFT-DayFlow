@@ -4,7 +4,7 @@ import {
   SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity,
   View, ActivityIndicator, Modal, TextInput, Alert
 } from 'react-native';
-import { WorkoutsAPI, Exercise, WorkoutSession, WeeklySplit, ExerciseSet } from './../api';
+import { WorkoutsAPI, Exercise, WorkoutSession, WeeklySplit, ExerciseSet } from '../../api';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 

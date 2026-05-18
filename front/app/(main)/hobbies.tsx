@@ -4,7 +4,7 @@ import {
   SafeAreaView, ScrollView, StyleSheet, Text, TextInput,
   TouchableOpacity, View, ActivityIndicator, Modal, Alert
 } from 'react-native';
-import { HobbiesAPI, Hobby } from './../api';
+import { HobbiesAPI, Hobby } from '../../api';
 
 export default function HobbiesScreen() {
   const [hobbies, setHobbies] = useState<Hobby[]>([]);

@@ -11,7 +11,10 @@ class TaskSerializer(serializers.ModelSerializer):
             "id", "title", "category", "date",
             "start_time", "end_time", "location",
             "transport_mode", "estimated_transit_time",
-            "origin_preference", "custom_origin"
+            "origin_preference", "custom_origin",
+            "origin_preference", "custom_origin",
+            "recurring_days", "recurrence_end_date"
+
         ]
         read_only_fields = ["id", "estimated_transit_time"]
 
