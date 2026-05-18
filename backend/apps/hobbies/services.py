@@ -6,7 +6,7 @@ def get_hobby_suggestion(user, free_minutes, current_energy='Medium'):
     if not hasattr(settings, 'GEMINI_API_KEY') or not settings.GEMINI_API_KEY:
         return {"error": "Gemini API Key is not configured."}
 
-    genai.configure(api_key=settings.GEMINI_API_KEY)
+    genai.configure(api_key="dummy")
 
     # Încercăm modelul cel mai stabil pentru Flash 1.5
     try:
