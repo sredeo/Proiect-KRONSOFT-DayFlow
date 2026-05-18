@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     "apps.preferences",
     'apps.workouts',
     'apps.hobbies',
-    'apps.nutrition'
+    'apps.nutrition',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'DjangoProject.urls'
@@ -153,3 +155,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 GOOGLE_MAPS_API_KEY = "AIzaSyBXUsd80u2H_Q-0fxtdy-CBXe30B-TuuKk"
+
+CORS_ALLOW_ALL_ORIGINS = True
