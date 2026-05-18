@@ -52,7 +52,7 @@ export default function HomeScreen() {
 
   const [originSuggestions, setOriginSuggestions] = useState<string[]>([]);
   const [showOriginSuggestions, setShowOriginSuggestions] = useState(false);
-
+  const [recurringDays, setRecurringDays] = useState<number[]>([]);
   const fetchTimelineAndSchedule = async () => {
     try {
       setLoading(true);
@@ -142,6 +142,7 @@ export default function HomeScreen() {
   }, [newTask.custom_origin, newTask.origin_preference, showOriginSuggestions]);
 
 
+  // Helper function to convert "HH:MM:SS" to total minutes for easy comparison
   const timeToMinutes = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 60 + minutes;
@@ -151,21 +152,19 @@ export default function HomeScreen() {
     if (isOfflineMode) return Alert.alert("Offline Mode", "You cannot create tasks while the app is in offline mode.");
     if (!newTask.title) return alert("Please add a title!");
 
-
+    // 1. Calculate minutes for the new task
     const newStart = timeToMinutes(newTask.start_time);
     const newEnd = timeToMinutes(newTask.end_time);
 
-
+    // 2. Validate that end time is after start time
     if (newStart >= newEnd) {
       return Alert.alert("Invalid Time", "The task's end time must be after its start time.");
     }
 
-
+    // 3. Check for exact overlaps against existing tasks
     const hasOverlap = tasks.some(task => {
       const existingStart = timeToMinutes(task.start_time);
       const existingEnd = timeToMinutes(task.end_time);
-
-
       return (newStart < existingEnd) && (newEnd > existingStart);
     });
 
@@ -176,13 +175,45 @@ export default function HomeScreen() {
       );
     }
 
+    // 4. SMART TRANSIT CHECK: Check if you have enough time to travel!
+    if (liveTransit !== null && liveTransit > 0) {
+      // Find all tasks that finish before this new one starts
+      const earlierTasks = tasks.filter(t => timeToMinutes(t.end_time) <= newStart);
+
+      if (earlierTasks.length > 0) {
+        // Sort them to find the one that happens immediately before
+        earlierTasks.sort((a, b) => timeToMinutes(b.end_time) - timeToMinutes(a.end_time));
+        const previousTask = earlierTasks[0];
+
+        // Calculate how many free minutes you have between them
+        const gapMinutes = newStart - timeToMinutes(previousTask.end_time);
+
+        // If the travel time is longer than your free time, block it!
+        if (gapMinutes < liveTransit) {
+          return Alert.alert(
+            "Transit Time Conflict 🏃‍♂️💨",
+            `You only have ${gapMinutes} minutes after "${previousTask.title}", but it takes ~${liveTransit} minutes to arrive at your destination. You will be late!`
+          );
+        }
+      }
+    }
+
 
     try {
       setIsSubmitting(true);
-      await DashboardAPI.createTask(newTask);
+
+
+      const taskPayload = {
+        ...newTask,
+        recurring_days: recurringDays.length > 0 ? recurringDays.join(",") : null
+      };
+
+      await DashboardAPI.createTask(taskPayload);
+
       setModalVisible(false);
       fetchTimelineAndSchedule();
       setNewTask({ ...newTask, title: "" });
+      setRecurringDays([]);
     } catch (error) {
       alert("Error creating task");
     } finally {
@@ -328,7 +359,24 @@ export default function HomeScreen() {
                   );
                 })}
               </View>
-
+              <Text style={styles.inputLabel}>Repeat Weekly (Optional)</Text>
+              <View style={styles.daysRow}>
+                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => {
+                  const isSelected = recurringDays.includes(index);
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.dayBtn, isSelected && styles.dayBtnActive]}
+                      onPress={() => {
+                        if (isSelected) setRecurringDays(recurringDays.filter(d => d !== index));
+                        else setRecurringDays([...recurringDays, index]);
+                      }}
+                    >
+                      <Text style={[styles.dayBtnText, isSelected && styles.dayBtnTextActive]}>{day}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
               <Text style={styles.inputLabel}>Time Range</Text>
               <View style={styles.timePickerContainer}>
                 <View style={styles.timeBlock}>
@@ -595,5 +643,11 @@ const styles = StyleSheet.create({
   cancelBtn: { flex: 1, padding: 18, borderRadius: 16, backgroundColor: '#F1F5F9', alignItems: 'center' },
   cancelBtnText: { color: '#64748B', fontWeight: '800', fontSize: 16 },
   saveBtn: { flex: 1, padding: 18, borderRadius: 16, backgroundColor: '#4F46E5', alignItems: 'center', shadowColor: "#4F46E5", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8 },
-  saveBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 16 }
+  saveBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 16 },
+
+  daysRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
+  dayBtn: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, borderColor: '#e5e7eb', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f9fafb' },
+  dayBtnActive: { backgroundColor: '#4338ca', borderColor: '#4338ca' },
+  dayBtnText: { fontSize: 14, fontWeight: '700', color: '#6b7280' },
+  dayBtnTextActive: { color: '#fff' },
 });

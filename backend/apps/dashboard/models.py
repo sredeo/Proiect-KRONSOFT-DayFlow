@@ -26,7 +26,8 @@ class Task(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-
+    recurring_days = models.CharField(max_length=20, blank=True, null=True, help_text="Ex: '0,2,4' for Mon, Wed, Fri")
+    recurrence_end_date = models.DateField(blank=True, null=True)
     # Locatie si deplasare
     location = models.CharField(max_length=255, blank=True, null=True)
     transport_mode = models.CharField(max_length=20, choices=TransportMode.choices, default=TransportMode.CAR)
